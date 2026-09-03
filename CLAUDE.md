@@ -8,8 +8,7 @@ primer minuto.
 
 ## 1. Qué es este proyecto y quién lo usa
 
-*(Lo escribes tú en la sesión: dos líneas. Qué es la página, para quién es y cada
-cuándo se usa.)*
+Es un buzón de sugerencias para la empresa. Lo uso yo y todo mi equipo.
 
 ## 2. De dónde sale cada cifra
 
@@ -42,8 +41,7 @@ sale de esa tabla o de lo que la persona escriba en el formulario.
 
 ## 5. Mi regla de verificación
 
-*(La escribes tú en la sesión: con qué frase cierras lo que entregas y qué tiene
-que ser cierto para que puedas publicarlo.)*
+Haz pull y despliega.
 
 ## 6. Cómo vuelvo a abrir esto
 
