@@ -16,20 +16,44 @@
   @media (prefers-color-scheme: dark) {
     body { background: #121820; color: #e8eef5; }
     .tarjeta { background: #1b232e !important; border-color: #2b3644 !important; }
-    .espacio-formulario { background: #182029 !important; border-color: #3a4552 !important; color: #9fb0c0 !important; }
+    input, textarea { background: #182029 !important; border-color: #3a4552 !important; color: #e8eef5 !important; }
+    .sugerencia { background: #182029 !important; border-color: #2b3644 !important; }
   }
   .contenedor { width: 100%; max-width: 560px; }
   .tarjeta {
     background: #fff; border: 1px solid #dde3ea; border-radius: 14px;
     padding: 28px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.3);
+    margin-bottom: 20px;
   }
   h1 { font-size: clamp(22px, 5vw, 28px); margin: 0 0 12px; }
-  .explicacion { margin: 0 0 24px; line-height: 1.55; }
-  .espacio-formulario {
-    border: 2px dashed #c3cdd8; border-radius: 10px;
-    padding: 32px 20px; text-align: center;
-    color: #6b7887; font-size: 14px; line-height: 1.5;
+  h2 { font-size: 18px; margin: 0 0 16px; }
+  .explicacion { margin: 0 0 0; line-height: 1.55; }
+  form { display: flex; flex-direction: column; gap: 14px; }
+  label { font-size: 14px; font-weight: 600; }
+  input, textarea {
+    font: inherit; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid #c3cdd8; width: 100%; box-sizing: border-box;
   }
+  textarea { min-height: 90px; resize: vertical; }
+  button {
+    font: inherit; font-weight: 600; padding: 12px; border: none;
+    border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer;
+  }
+  button:disabled { opacity: .6; cursor: default; }
+  .mensaje-estado { font-size: 14px; min-height: 20px; }
+  .mensaje-estado.exito { color: #1a7f37; }
+  .mensaje-estado.error { color: #c0392b; }
+  @media (prefers-color-scheme: dark) {
+    .mensaje-estado.exito { color: #4ade80; }
+    .mensaje-estado.error { color: #f87171; }
+  }
+  .lista-sugerencias { display: flex; flex-direction: column; gap: 12px; }
+  .sugerencia {
+    border: 1px solid #dde3ea; border-radius: 10px; padding: 14px 16px;
+  }
+  .sugerencia .nombre { font-weight: 600; margin: 0 0 4px; font-size: 14px; }
+  .sugerencia .texto { margin: 0; line-height: 1.5; }
+  .vacio { color: #6b7887; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -40,10 +64,99 @@
         Aquí vas a poder dejar tus ideas y comentarios para mejorar cómo
         trabajamos en el área. Cualquier sugerencia es bienvenida.
       </p>
-      <div class="espacio-formulario">
-        Aquí va el formulario para dejar tu sugerencia (siguiente paso).
+    </div>
+
+    <div class="tarjeta">
+      <h2>Deja tu sugerencia</h2>
+      <form id="form-sugerencia">
+        <div>
+          <label for="nombre">Tu nombre (opcional)</label>
+          <input type="text" id="nombre" name="nombre" maxlength="120" placeholder="Anónimo">
+        </div>
+        <div>
+          <label for="mensaje">Tu sugerencia</label>
+          <textarea id="mensaje" name="mensaje" maxlength="1000" required placeholder="Escribe aquí tu idea..."></textarea>
+        </div>
+        <button type="submit" id="boton-enviar">Enviar sugerencia</button>
+        <p class="mensaje-estado" id="mensaje-estado"></p>
+      </form>
+    </div>
+
+    <div class="tarjeta">
+      <h2>Sugerencias recibidas</h2>
+      <div class="lista-sugerencias" id="lista-sugerencias">
+        <p class="vacio">Cargando...</p>
       </div>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = "https://suudhaxfzyvalcrhbtvu.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9m2olLaIhS_NXkKrT47F-Q_zT-qCbGD";
+    const cliente = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    function escaparHtml(texto) {
+      const div = document.createElement("div");
+      div.textContent = texto;
+      return div.innerHTML;
+    }
+
+    async function cargarSugerencias() {
+      const contenedor = document.getElementById("lista-sugerencias");
+      const { data, error } = await cliente
+        .from("registros")
+        .select("nombre, mensaje, created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        contenedor.innerHTML = '<p class="vacio">No se pudieron cargar las sugerencias todavía.</p>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        contenedor.innerHTML = '<p class="vacio">Todavía no hay sugerencias.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = data.map((fila) => `
+        <div class="sugerencia">
+          <p class="nombre">${escaparHtml(fila.nombre && fila.nombre.trim() ? fila.nombre : "Anónimo")}</p>
+          <p class="texto">${escaparHtml(fila.mensaje || "")}</p>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("form-sugerencia").addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      const boton = document.getElementById("boton-enviar");
+      const estado = document.getElementById("mensaje-estado");
+      const nombre = document.getElementById("nombre").value.trim();
+      const mensaje = document.getElementById("mensaje").value.trim();
+
+      if (!mensaje) return;
+
+      boton.disabled = true;
+      estado.textContent = "Enviando...";
+      estado.className = "mensaje-estado";
+
+      const { error } = await cliente.from("registros").insert({ nombre, mensaje });
+
+      boton.disabled = false;
+
+      if (error) {
+        estado.textContent = "No se pudo enviar. Intenta de nuevo.";
+        estado.className = "mensaje-estado error";
+        return;
+      }
+
+      estado.textContent = "¡Gracias! Tu sugerencia quedó registrada.";
+      estado.className = "mensaje-estado exito";
+      document.getElementById("form-sugerencia").reset();
+      cargarSugerencias();
+    });
+
+    cargarSugerencias();
+  </script>
 </body>
 </html>
