@@ -1,31 +1,27 @@
 # Mi página
 
-Una página pública con un formulario que guarda lo que la gente escribe, y una
-lista que muestra lo guardado.
+Buzón de sugerencias interno: cualquiera del equipo entra, deja una idea y ve
+las que ya dejaron los demás. GitHub guarda el proyecto, Netlify lo publica y
+Supabase guarda lo escrito. Se armó pidiéndole todo a Claude, sin escribir
+código (Sesión 7 del curso Claude for Business).
 
-Construida en la **Sesión 7 del curso Claude for Business**, sin escribir código:
-todo se le pidió a Claude en español.
+## De dónde salen los datos
 
-## Cómo está armado
+Todo lo que se ve —nombres, mensajes— sale de la tabla `registros` en Supabase
+(columnas `id`, `created_at`, `nombre`, `mensaje`). Nada se escribe a mano en
+el HTML.
 
-| Pieza | Qué hace |
-|---|---|
-| **GitHub** | Guarda este proyecto y su historial |
-| **Netlify** | Publica lo que hay aquí como página web |
-| **Supabase** | Guarda lo que la gente escribe en el formulario |
+## Qué hace CLAUDE.md
 
-## Cómo se cambia
+El archivo que Claude lee solo en cada sesión sobre este repo: trae las reglas
+para trabajar aquí (rama primero, avisar antes de tocar la base de datos, qué
+llaves nunca deben quedar escritas).
 
-1. Se abre una sesión de Claude sobre este repositorio.
-2. Se le pide el cambio **en una rama**, no en `main`.
-3. Claude fusiona la rama a `main` y publica automáticamente — no hace falta
-   pedirlo aparte ni revisarlo antes.
+## Para seguir trabajando aquí
 
-> **Cada fusión cuenta como una publicación.** El plan gratuito de Netlify
-> alcanza para unas veinte al mes, así que conviene juntar cambios pequeños en
-> una sola rama antes de pedir el siguiente.
+1. Abre una sesión de Claude sobre este repositorio.
+2. Pide el cambio; Claude lo hace en una rama, nunca directo sobre `main`.
+3. Claude fusiona a `main` y publica solo, sin pedirlo aparte.
 
-## Qué NO va en este repositorio
-
-La llave `sb_publishable_` sí puede estar aquí: está hecha para andar a la vista.
-La que empieza con `sb_secret_` o dice `service_role`, **nunca**.
+> Si deja de mostrar datos tras una semana sin uso, el proyecto gratuito de
+> Supabase seguramente se pausó: despiértalo con **Resume project**.

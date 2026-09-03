@@ -12,11 +12,16 @@ Es un buzón de sugerencias para la empresa. Lo uso yo y todo mi equipo.
 
 ## 2. De dónde sale cada cifra
 
-Los datos de esta página viven en una tabla de Supabase llamada `registros`.
+Los datos de esta página viven en una tabla de Supabase llamada `registros`, con
+estas columnas:
+
+- `id` — número que identifica cada sugerencia (lo pone Supabase solo).
+- `created_at` — fecha y hora en que se guardó (lo pone Supabase solo).
+- `nombre` — lo que la persona escribió en "Tu nombre" (puede quedar vacío).
+- `mensaje` — el texto de la sugerencia.
+
 Ninguna cifra ni ningún texto que se muestre se escribe a mano en el HTML: todo
 sale de esa tabla o de lo que la persona escriba en el formulario.
-
-*(En la sesión le agregas las columnas que acabes usando.)*
 
 ## 3. Cómo quiero que trabajes aquí
 
