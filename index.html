@@ -5,26 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Buzón de sugerencias</title>
 <style>
-  :root { color-scheme: light dark; }
+  :root {
+    color-scheme: light dark;
+    --verde: #7c8b65;
+    --verde-oscuro: #5f6b4c;
+    --beige: #f0e9d8;
+    --beige-tarjeta: #fbf8f0;
+    --borde: #ddd3ba;
+    --texto: #2b2a25;
+  }
   body {
     margin: 0; min-height: 100vh;
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: #f4f6f8; color: #1a2027;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--beige); color: var(--texto);
     padding: 24px;
     display: flex; justify-content: center;
   }
   @media (prefers-color-scheme: dark) {
-    body { background: #121820; color: #e8eef5; }
-    .tarjeta { background: #1b232e !important; border-color: #2b3644 !important; }
-    input, textarea { background: #182029 !important; border-color: #3a4552 !important; color: #e8eef5 !important; }
-    .sugerencia { background: #182029 !important; border-color: #2b3644 !important; }
+    :root {
+      --verde: #93a37a;
+      --verde-oscuro: #b6c4a0;
+      --beige-tarjeta: #232920;
+      --borde: #3a4232;
+      --texto: #ede7d8;
+    }
+    body { background: #1b1f17; }
+    .tarjeta { background: var(--beige-tarjeta) !important; border-color: var(--borde) !important; }
+    input, textarea { background: #1b1f17 !important; border-color: var(--borde) !important; color: var(--texto) !important; }
+    .sugerencia { background: var(--beige-tarjeta) !important; border-color: var(--borde) !important; }
   }
   .contenedor { width: 100%; max-width: 560px; }
   .tarjeta {
-    background: #fff; border: 1px solid #dde3ea; border-radius: 14px;
+    background: var(--beige-tarjeta); border: 1px solid var(--borde); border-radius: 14px;
     padding: 28px; box-shadow: 0 10px 30px -18px rgba(0,0,0,.3);
     margin-bottom: 20px;
   }
+  h1, h2 { color: var(--verde-oscuro); }
   h1 { font-size: clamp(22px, 5vw, 28px); margin: 0 0 12px; }
   h2 { font-size: 18px; margin: 0 0 16px; }
   .explicacion { margin: 0 0 0; line-height: 1.55; }
@@ -32,24 +48,24 @@
   label { font-size: 14px; font-weight: 600; }
   input, textarea {
     font: inherit; padding: 10px 12px; border-radius: 8px;
-    border: 1px solid #c3cdd8; width: 100%; box-sizing: border-box;
+    border: 1px solid var(--borde); width: 100%; box-sizing: border-box;
   }
   textarea { min-height: 90px; resize: vertical; }
   button {
     font: inherit; font-weight: 600; padding: 12px; border: none;
-    border-radius: 8px; background: #2563eb; color: #fff; cursor: pointer;
+    border-radius: 8px; background: var(--verde); color: #fff; cursor: pointer;
   }
+  button:hover:not(:disabled) { background: var(--verde-oscuro); }
   button:disabled { opacity: .6; cursor: default; }
   .mensaje-estado { font-size: 14px; min-height: 20px; }
-  .mensaje-estado.exito { color: #1a7f37; }
+  .mensaje-estado.exito { color: var(--verde-oscuro); }
   .mensaje-estado.error { color: #c0392b; }
   @media (prefers-color-scheme: dark) {
-    .mensaje-estado.exito { color: #4ade80; }
     .mensaje-estado.error { color: #f87171; }
   }
   .lista-sugerencias { display: flex; flex-direction: column; gap: 12px; }
   .sugerencia {
-    border: 1px solid #dde3ea; border-radius: 10px; padding: 14px 16px;
+    border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px;
   }
   .sugerencia .nombre { font-weight: 600; margin: 0 0 4px; font-size: 14px; }
   .sugerencia .texto { margin: 0; line-height: 1.5; }
